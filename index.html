@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0010" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Abyss Gacha</title>
+
+  <!-- ═══════════════════════════════════════
+       EXTERNAL LIBRARIES
+  ════════════════════════════════════════ -->
+  <!-- Iconify icons -->
+  <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- ═══════════════════════════════════════
+       CSS
+  ════════════════════════════════════════ -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/gacha.css" />
+  <link rel="stylesheet" href="css/collection.css" />
+  <link rel="stylesheet" href="css/party.css" />
+  <link rel="stylesheet" href="css/battle.css" />
+  <link rel="stylesheet" href="css/profile.css" />
+  <link rel="stylesheet" href="css/gm.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════
+       LOADING SCREEN
+  ════════════════════════════════════════ -->
+  <div id="screen-loading" class="screen active">
+    <div class="loading-content">
+      <div class="loading-logo">
+        <iconify-icon icon="game-icons:crystal-ball" width="64" height="64"></iconify-icon>
+      </div>
+      <h1 class="loading-title">ABYSS GACHA</h1>
+      <p class="loading-sub">Crawling up from the edge of despair...</p>
+      <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       AUTH SCREEN (Login / Register / Reset)
+  ════════════════════════════════════════ -->
+  <div id="screen-auth" class="screen">
+
+    <div class="auth-bg">
+      <iconify-icon icon="game-icons:crystal-ball" width="80" height="80" class="auth-logo"></iconify-icon>
+      <h1 class="auth-title">ABYSS GACHA</h1>
+      <p class="auth-tagline">The Infinite Gacha awaits...</p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="auth-login" class="auth-panel active">
+      <h2>Login</h2>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:cowled" width="20"></iconify-icon>
+        <input type="text" id="login-username" placeholder="Username" autocomplete="off" />
+      </div>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:locked-fortress" width="20"></iconify-icon>
+        <input type="password" id="login-password" placeholder="Password" />
+      </div>
+      <div id="login-error" class="auth-error hidden"></div>
+      <button id="btn-login" class="btn-primary">
+        <iconify-icon icon="game-icons:dungeon-gate" width="20"></iconify-icon>
+        Enter the Abyss
+      </button>
+      <div class="auth-links">
+        <span id="goto-register">New player? Register</span>
+        <span id="goto-reset">Forgot password?</span>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="auth-register" class="auth-panel">
+      <h2>Create Account</h2>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:cowled" width="20"></iconify-icon>
+        <input type="text" id="reg-username" placeholder="Username" autocomplete="off" />
+      </div>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:envelope" width="20"></iconify-icon>
+        <input type="email" id="reg-email" placeholder="Email (for password reset)" />
+      </div>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:locked-fortress" width="20"></iconify-icon>
+        <input type="password" id="reg-password" placeholder="Password" />
+      </div>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:locked-fortress" width="20"></iconify-icon>
+        <input type="password" id="reg-confirm" placeholder="Confirm Password" />
+      </div>
+      <div id="reg-error" class="auth-error hidden"></div>
+      <button id="btn-register" class="btn-primary">
+        <iconify-icon icon="game-icons:mighty-spanner" width="20"></iconify-icon>
+        Create Account
+      </button>
+      <div class="auth-links">
+        <span id="goto-login">Already have account? Login</span>
+      </div>
+    </div>
+
+    <!-- Reset Password Form -->
+    <div id="auth-reset" class="auth-panel">
+      <h2>Reset Password</h2>
+      <p class="auth-hint">Enter your username or email. A reset link will be sent to your email.</p>
+      <div class="input-group">
+        <iconify-icon icon="game-icons:cowled" width="20"></iconify-icon>
+        <input type="text" id="reset-input" placeholder="Username or Email" autocomplete="off" />
+      </div>
+      <div id="reset-error" class="auth-error hidden"></div>
+      <div id="reset-success" class="auth-success hidden"></div>
+      <button id="btn-reset" class="btn-primary">
+        <iconify-icon icon="game-icons:envelope" width="20"></iconify-icon>
+        Send Reset Link
+      </button>
+      <div class="auth-links">
+        <span id="goto-login-from-reset">Back to Login</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       MAIN GAME WRAPPER (visible after login)
+  ════════════════════════════════════════ -->
+  <div id="game-wrapper" class="hidden">
+
+    <!-- TOP BAR -->
+    <div id="top-bar">
+      <div class="top-bar-left">
+        <span id="top-username"></span>
+        <span id="top-role-badge"></span>
+      </div>
+      <div class="top-bar-right">
+        <iconify-icon icon="game-icons:crystals" width="20"></iconify-icon>
+        <span id="top-crystals">0</span>
+        <div id="notif-bell" class="notif-bell">
+          <iconify-icon icon="game-icons:bell" width="20"></iconify-icon>
+          <span id="notif-count" class="notif-count hidden">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN CONTENTS -->
+    <div id="screen-home"       class="game-screen active"></div>
+    <div id="screen-gacha"      class="game-screen"></div>
+    <div id="screen-collection" class="game-screen"></div>
+    <div id="screen-party"      class="game-screen"></div>
+    <div id="screen-battle"     class="game-screen"></div>
+    <div id="screen-profile"    class="game-screen"></div>
+    <div id="screen-gm"         class="game-screen"></div>
+
+    <!-- NOTIFICATION PANEL (overlay) -->
+    <div id="notif-panel" class="overlay hidden">
+      <div class="overlay-box">
+        <div class="overlay-header">
+          <h3>Inbox</h3>
+          <button class="btn-close" id="notif-close">✕</button>
+        </div>
+        <div id="notif-list"></div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav id="bottom-nav">
+      <button class="nav-btn active" data-screen="home">
+        <iconify-icon icon="game-icons:house" width="24"></iconify-icon>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-screen="gacha">
+        <iconify-icon icon="game-icons:card-pick" width="24"></iconify-icon>
+        <span>Gacha</span>
+      </button>
+      <button class="nav-btn" data-screen="collection">
+        <iconify-icon icon="game-icons:scroll-unfurled" width="24"></iconify-icon>
+        <span>Cards</span>
+      </button>
+      <button class="nav-btn" data-screen="party">
+        <iconify-icon icon="game-icons:crossed-swords" width="24"></iconify-icon>
+        <span>Party</span>
+      </button>
+      <button class="nav-btn" data-screen="battle">
+        <iconify-icon icon="game-icons:dungeon-gate" width="24"></iconify-icon>
+        <span>Battle</span>
+      </button>
+      <button class="nav-btn" data-screen="profile">
+        <iconify-icon icon="game-icons:cowled" width="24"></iconify-icon>
+        <span>Profile</span>
+      </button>
+      <!-- GM tab: only shown if role_id === 99 -->
+      <button class="nav-btn hidden" data-screen="gm" id="nav-gm">
+        <iconify-icon icon="game-icons:crown" width="24"></iconify-icon>
+        <span>GM</span>
+      </button>
+    </nav>
+
+  </div><!-- end #game-wrapper -->
+
+
+  <!-- ═══════════════════════════════════════
+       GLOBAL TOAST NOTIFICATION
+  ════════════════════════════════════════ -->
+  <div id="toast" class="toast hidden"></div>
+
+
+  <!-- ═══════════════════════════════════════
+       JS FILES (load order matters!)
+  ════════════════════════════════════════ -->
+  <script src="js/supabase.js"></script>
+  <script src="js/data/cards.js"></script>
+  <script src="js/data/enemies.js"></script>
+  <script src="js/data/stages.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/collection.js"></script>
+  <script src="js/party.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/gm.js"></script>
+
+</body>
+</html>
