@@ -1,0 +1,298 @@
+/* ═══════════════════════════════════════════════════════════
+   ABYSS GACHA — AUTH CSS
+   Login, Register, Reset Password screens
+═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────
+   AUTH SCREEN WRAPPER
+─────────────────────────────────────── */
+#screen-auth {
+  background: radial-gradient(ellipse at 50% 30%, #1e0040 0%, #0a0010 65%);
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding-bottom: var(--space-xl);
+}
+
+/* ───────────────────────────────────────
+   AUTH BACKGROUND / HERO
+─────────────────────────────────────── */
+.auth-bg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px var(--space-lg) var(--space-lg);
+  text-align: center;
+  position: relative;
+}
+
+.auth-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(155,48,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.auth-logo {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 24px rgba(155, 48, 255, 0.9));
+  animation: pulse 2.5s ease-in-out infinite;
+  margin-bottom: var(--space-md);
+}
+
+.auth-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 8px;
+  color: var(--text-accent);
+  text-shadow:
+    0 0 20px rgba(240, 192, 64, 0.6),
+    0 0 40px rgba(240, 192, 64, 0.3);
+  margin-bottom: var(--space-sm);
+}
+
+.auth-tagline {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: 1px;
+}
+
+/* ───────────────────────────────────────
+   AUTH PANEL (form container)
+─────────────────────────────────────── */
+.auth-panel {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 380px;
+  padding: var(--space-lg);
+  margin: 0 auto;
+  background: rgba(26, 0, 40, 0.8);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(155, 48, 255, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.3s ease forwards;
+}
+
+.auth-panel.active {
+  display: flex;
+}
+
+.auth-panel h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+/* ───────────────────────────────────────
+   AUTH HINT TEXT
+─────────────────────────────────────── */
+.auth-hint {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.6;
+  padding: var(--space-sm);
+  background: rgba(155, 48, 255, 0.06);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
+}
+
+/* ───────────────────────────────────────
+   AUTH ERROR / SUCCESS MESSAGES
+─────────────────────────────────────── */
+.auth-error {
+  font-size: 0.82rem;
+  color: var(--color-danger);
+  background: rgba(255, 51, 85, 0.1);
+  border: 1px solid rgba(255, 51, 85, 0.3);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.auth-success {
+  font-size: 0.82rem;
+  color: var(--color-success);
+  background: rgba(48, 255, 144, 0.08);
+  border: 1px solid rgba(48, 255, 144, 0.25);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  animation: fadeIn 0.2s ease;
+}
+
+/* ───────────────────────────────────────
+   AUTH LINKS (navigation between panels)
+─────────────────────────────────────── */
+.auth-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  padding-top: var(--space-sm);
+}
+
+.auth-links span {
+  font-size: 0.82rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.auth-links span:active {
+  color: var(--text-accent);
+}
+
+/* ───────────────────────────────────────
+   PASSWORD STRENGTH INDICATOR
+─────────────────────────────────────── */
+.password-strength {
+  display: flex;
+  gap: 4px;
+  margin-top: -8px;
+}
+
+.strength-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.strength-bar.weak   { background: var(--color-danger); }
+.strength-bar.medium { background: var(--rarity-ur); }
+.strength-bar.strong { background: var(--color-success); }
+
+/* ───────────────────────────────────────
+   REGISTER — USERNAME AVAILABILITY
+─────────────────────────────────────── */
+.username-check {
+  font-size: 0.75rem;
+  margin-top: -8px;
+  padding-left: 4px;
+  transition: color 0.2s;
+}
+
+.username-check.checking  { color: var(--text-muted); }
+.username-check.available { color: var(--color-success); }
+.username-check.taken     { color: var(--color-danger); }
+
+/* ───────────────────────────────────────
+   LOADING STATE ON BUTTONS
+─────────────────────────────────────── */
+.btn-primary.loading,
+.btn-accent.loading {
+  pointer-events: none;
+  opacity: 0.75;
+  position: relative;
+  color: transparent;
+}
+
+.btn-primary.loading::after,
+.btn-accent.loading::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ───────────────────────────────────────
+   DECORATIVE RARITY DOTS (background)
+─────────────────────────────────────── */
+.auth-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(155,48,255,0.08) 1px, transparent 1px),
+    radial-gradient(circle, rgba(240,192,64,0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 70px 70px;
+  background-position: 0 0, 20px 20px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ───────────────────────────────────────
+   TERMS / FOOTER NOTE
+─────────────────────────────────────── */
+.auth-footer-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0 var(--space-lg);
+  line-height: 1.6;
+}
+
+/* ───────────────────────────────────────
+   WELCOME BANNER (shown after register)
+─────────────────────────────────────── */
+.welcome-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, rgba(155,48,255,0.15), rgba(240,192,64,0.1));
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.welcome-banner iconify-icon {
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 12px rgba(240,192,64,0.6));
+}
+
+.welcome-banner h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-accent);
+}
+
+.welcome-banner p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.welcome-crystals {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--text-accent);
+  padding: var(--space-sm) var(--space-lg);
+  background: rgba(240,192,64,0.1);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(240,192,64,0.3);
+}
