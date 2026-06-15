@@ -1,0 +1,668 @@
+/* ═══════════════════════════════════════════════════════════
+   ABYSS GACHA — GACHA CSS
+   Pull screen, card reveal animations, rates, pity display
+═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────
+   GACHA SCREEN WRAPPER
+─────────────────────────────────────── */
+#screen-gacha {
+  background: radial-gradient(ellipse at 50% 20%, #200040 0%, #0a0010 65%);
+  gap: var(--space-md);
+}
+
+/* ───────────────────────────────────────
+   GACHA BANNER HEADER
+─────────────────────────────────────── */
+.gacha-banner {
+  position: relative;
+  background: linear-gradient(135deg, #200040, #0d0020, #200040);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  text-align: center;
+  overflow: hidden;
+}
+
+.gacha-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(155,48,255,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(240,192,64,0.10) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.gacha-banner-icon {
+  position: relative;
+  z-index: 1;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 20px rgba(155,48,255,0.9));
+  animation: pulse 2s ease-in-out infinite;
+  margin-bottom: var(--space-sm);
+}
+
+.gacha-banner-title {
+  position: relative;
+  z-index: 1;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.gacha-banner-subtitle {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Floating star particles */
+.gacha-banner-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.gacha-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%       { opacity: 1; transform: scale(1.5); }
+}
+
+/* ───────────────────────────────────────
+   CRYSTAL BALANCE (in gacha screen)
+─────────────────────────────────────── */
+.gacha-balance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-xl);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-accent);
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.gacha-balance iconify-icon {
+  color: var(--color-accent);
+}
+
+/* ───────────────────────────────────────
+   PULL BUTTONS
+─────────────────────────────────────── */
+.pull-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pull-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: transform 0.1s, opacity 0.1s, box-shadow 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+
+.pull-btn:active::before {
+  transform: translateX(100%);
+}
+
+.pull-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.pull-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pull-btn-single {
+  background: linear-gradient(135deg, var(--color-primary-dim), var(--color-primary));
+  color: #fff;
+  box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.pull-btn-ten {
+  background: linear-gradient(135deg, var(--color-accent-dim), var(--color-accent));
+  color: #000;
+  box-shadow: var(--shadow-md), var(--glow-accent);
+}
+
+.pull-btn-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pull-btn-label {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.pull-btn-sublabel {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.pull-btn-cost {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+/* ───────────────────────────────────────
+   PITY TRACKER (gacha screen)
+─────────────────────────────────────── */
+.gacha-pity-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.gacha-pity-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.gacha-pity-title iconify-icon {
+  color: var(--text-muted);
+}
+
+.pity-track-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pity-track-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+
+.pity-track-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.pity-track-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.pity-track-fill.ssr-fill {
+  background: linear-gradient(90deg, var(--rarity-sr), var(--rarity-ssr));
+}
+
+.pity-track-fill.sur-fill {
+  background: linear-gradient(90deg, var(--rarity-ssr), var(--rarity-sur));
+}
+
+.pity-track-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 44px;
+  text-align: right;
+}
+
+/* ───────────────────────────────────────
+   RATES TABLE
+─────────────────────────────────────── */
+.rates-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-sm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.rates-toggle iconify-icon {
+  transition: transform 0.2s;
+}
+
+.rates-toggle.open iconify-icon {
+  transform: rotate(180deg);
+}
+
+.rates-table {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.rates-table.visible {
+  display: block;
+}
+
+.rates-table-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rates-table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: var(--space-sm) var(--space-md);
+  border-top: 1px solid var(--border-dim);
+  font-size: 0.82rem;
+  align-items: center;
+}
+
+.rates-table-row:nth-child(even) {
+  background: rgba(255,255,255,0.02);
+}
+
+.rates-rarity {
+  font-weight: 800;
+}
+
+.rates-percent {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.rates-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ───────────────────────────────────────
+   PULL ANIMATION OVERLAY
+─────────────────────────────────────── */
+#pull-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+#pull-overlay.hidden {
+  display: none;
+}
+
+/* Phase 1: Swirling portal */
+.pull-portal {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #3a0080 0%, #0a0010 70%);
+  border: 3px solid var(--color-primary);
+  box-shadow:
+    0 0 40px rgba(155,48,255,0.8),
+    0 0 80px rgba(155,48,255,0.4),
+    inset 0 0 40px rgba(155,48,255,0.3);
+  animation: portalSpin 1s linear infinite;
+  position: relative;
+}
+
+@keyframes portalSpin {
+  0%   { transform: rotate(0deg)   scale(1);    box-shadow: 0 0 40px rgba(155,48,255,0.8), 0 0 80px rgba(155,48,255,0.4); }
+  50%  { transform: rotate(180deg) scale(1.08); box-shadow: 0 0 60px rgba(155,48,255,1.0), 0 0 120px rgba(155,48,255,0.6); }
+  100% { transform: rotate(360deg) scale(1);    box-shadow: 0 0 40px rgba(155,48,255,0.8), 0 0 80px rgba(155,48,255,0.4); }
+}
+
+.pull-portal-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Phase 2: Card reveal grid */
+.pull-results-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Single pull result */
+.pull-results-single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+/* Result card in pull overlay */
+.pull-result-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-dim);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  animation: cardFlip 0.4s ease forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  transform: rotateY(90deg);
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes cardFlip {
+  0%   { opacity: 0; transform: rotateY(90deg) scale(0.8); }
+  60%  { transform: rotateY(-10deg) scale(1.05); }
+  100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+
+.pull-result-card .card-rarity-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.pull-result-card.revealed .card-rarity-glow {
+  opacity: 1;
+}
+
+.pull-result-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pull-result-card-name {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pull-result-card-rarity {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* NEW badge for new cards */
+.pull-new-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--color-success);
+  color: #000;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+
+/* SUR/EX special flash */
+.pull-result-card.rarity-sur,
+.pull-result-card.rarity-ex {
+  animation: cardFlipGold 0.6s ease forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes cardFlipGold {
+  0%   { opacity: 0; transform: rotateY(90deg) scale(0.8); }
+  40%  { transform: rotateY(-15deg) scale(1.15); }
+  70%  { transform: rotateY(5deg) scale(1.08); }
+  100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+
+/* Background flash for SUR+ pull */
+.pull-flash-gold {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(240,192,64,0.3) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 299;
+  animation: flashGold 0.8s ease forwards;
+}
+
+@keyframes flashGold {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Background flash for EX pull */
+.pull-flash-rainbow {
+  position: fixed;
+  inset: 0;
+  background: conic-gradient(
+    rgba(255,48,255,0.25),
+    rgba(48,144,255,0.25),
+    rgba(48,255,144,0.25),
+    rgba(240,192,64,0.25),
+    rgba(255,48,255,0.25)
+  );
+  pointer-events: none;
+  z-index: 299;
+  animation: flashRainbow 1.2s ease forwards;
+}
+
+@keyframes flashRainbow {
+  0%   { opacity: 0; transform: rotate(0deg); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(180deg); }
+}
+
+/* Pull overlay close/continue button */
+.pull-continue-btn {
+  padding: 12px 32px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-normal);
+  transition: background 0.15s;
+  animation: fadeIn 0.3s ease 1.5s both;
+}
+
+.pull-continue-btn:active {
+  background: var(--bg-card);
+}
+
+/* Pull again button */
+.pull-again-btn {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, var(--color-primary-dim), var(--color-primary));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glow-primary);
+  transition: transform 0.1s;
+  animation: fadeIn 0.3s ease 1.5s both;
+}
+
+.pull-again-btn:active {
+  transform: scale(0.96);
+}
+
+.pull-overlay-actions {
+  display: flex;
+  gap: var(--space-md);
+  animation: fadeIn 0.3s ease 1.5s both;
+}
+
+/* ───────────────────────────────────────
+   SINGLE PULL RESULT (large card)
+─────────────────────────────────────── */
+.single-result-card {
+  width: 180px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-dim);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  animation: cardFlipBig 0.6s ease forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes cardFlipBig {
+  0%   { opacity: 0; transform: rotateY(90deg) scale(0.7); }
+  60%  { transform: rotateY(-8deg) scale(1.05); }
+  100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+
+.single-result-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.single-result-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.single-result-type {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.single-result-rarity-badge {
+  margin-top: auto;
+}
+
+/* ───────────────────────────────────────
+   DUPLICATE NOTICE
+─────────────────────────────────────── */
+.dup-notice {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--space-sm);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
+}
+
+.dup-notice iconify-icon {
+  color: var(--rarity-sur);
+  vertical-align: middle;
+}
+
+/* ───────────────────────────────────────
+   PULL SUMMARY (after 10-pull)
+─────────────────────────────────────── */
+.pull-summary {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--space-sm) 0;
+}
+
+.pull-summary-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--border-dim);
+}
