@@ -1,0 +1,581 @@
+/* ═══════════════════════════════════════════════════════════
+   ABYSS GACHA — HOME CSS
+   Kingdom screen, daily login, announcements, voucher
+═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────
+   HOME SCREEN WRAPPER
+─────────────────────────────────────── */
+#screen-home {
+  background: radial-gradient(ellipse at 50% 0%, #1a0030 0%, #0a0010 60%);
+  gap: var(--space-md);
+}
+
+/* ───────────────────────────────────────
+   KINGDOM BANNER
+─────────────────────────────────────── */
+.kingdom-banner {
+  position: relative;
+  background: linear-gradient(135deg, #1a0035 0%, #0d0020 50%, #1a0035 100%);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  overflow: hidden;
+  text-align: center;
+}
+
+.kingdom-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(155,48,255,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.kingdom-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(240,192,64,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.kingdom-icon {
+  position: relative;
+  z-index: 1;
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 16px rgba(240,192,64,0.7));
+  animation: pulse 3s ease-in-out infinite;
+  margin-bottom: var(--space-sm);
+}
+
+.kingdom-name {
+  position: relative;
+  z-index: 1;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--text-accent);
+  text-shadow: 0 0 20px rgba(240,192,64,0.5);
+  text-transform: uppercase;
+}
+
+.kingdom-subtitle {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.kingdom-rank {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding: 6px 16px;
+  background: rgba(240,192,64,0.1);
+  border: 1px solid rgba(240,192,64,0.3);
+  border-radius: var(--radius-xl);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-accent);
+}
+
+/* ───────────────────────────────────────
+   PLAYER STATS ROW
+─────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-sm);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-box iconify-icon {
+  color: var(--color-primary);
+}
+
+.stat-box-value {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.stat-box-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ───────────────────────────────────────
+   DAILY LOGIN REWARD
+─────────────────────────────────────── */
+.daily-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.daily-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(155,48,255,0.05), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+.daily-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(155,48,255,0.2), rgba(240,192,64,0.1));
+  border: 1px solid var(--border-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.daily-card-info {
+  flex: 1;
+}
+
+.daily-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.daily-card-reward {
+  font-size: 0.82rem;
+  color: var(--text-accent);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.daily-card-reward iconify-icon {
+  color: var(--color-accent);
+}
+
+.daily-card-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.daily-claim-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--color-primary-dim), var(--color-primary));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--glow-primary);
+  transition: transform 0.1s, opacity 0.1s;
+  white-space: nowrap;
+}
+
+.daily-claim-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.daily-claim-btn.claimed {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* ───────────────────────────────────────
+   ANNOUNCEMENT BANNER
+─────────────────────────────────────── */
+.announcement-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.announcement-card {
+  background: linear-gradient(135deg, rgba(155,48,255,0.08), rgba(240,192,64,0.05));
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  animation: fadeIn 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.announcement-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
+}
+
+.announcement-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.announcement-header iconify-icon {
+  color: var(--color-accent);
+}
+
+.announcement-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.announcement-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.announcement-body {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 4px;
+}
+
+/* ───────────────────────────────────────
+   VOUCHER CODE INPUT
+─────────────────────────────────────── */
+.voucher-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.voucher-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+}
+
+.voucher-section-title iconify-icon {
+  color: var(--color-accent);
+}
+
+.voucher-input-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.voucher-input-row .input-group {
+  flex: 1;
+  margin: 0;
+}
+
+.voucher-input-row input {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.voucher-redeem-btn {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--color-accent-dim), var(--color-accent));
+  color: #000;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--glow-accent);
+  transition: transform 0.1s, opacity 0.1s;
+  white-space: nowrap;
+}
+
+.voucher-redeem-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.voucher-result {
+  margin-top: var(--space-sm);
+  font-size: 0.82rem;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+  animation: fadeIn 0.2s ease;
+}
+
+.voucher-result.success {
+  background: rgba(48,255,144,0.08);
+  border: 1px solid rgba(48,255,144,0.25);
+  color: var(--color-success);
+}
+
+.voucher-result.error {
+  background: rgba(255,51,85,0.08);
+  border: 1px solid rgba(255,51,85,0.25);
+  color: var(--color-danger);
+}
+
+/* ───────────────────────────────────────
+   QUICK ACTION BUTTONS
+─────────────────────────────────────── */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.quick-action-btn iconify-icon {
+  color: var(--color-primary);
+  transition: transform 0.15s;
+}
+
+.quick-action-btn:active {
+  background: var(--bg-elevated);
+  border-color: var(--color-primary);
+  color: var(--text-primary);
+}
+
+.quick-action-btn:active iconify-icon {
+  transform: scale(1.15);
+}
+
+/* ───────────────────────────────────────
+   RECENT ACTIVITY / PULL HISTORY PREVIEW
+─────────────────────────────────────── */
+.recent-pulls {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.recent-pulls-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-md);
+}
+
+.recent-pulls-title iconify-icon {
+  color: var(--text-muted);
+}
+
+.recent-pull-list {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.recent-pull-list::-webkit-scrollbar {
+  height: 2px;
+}
+
+.recent-pull-chip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-sm);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dim);
+  min-width: 52px;
+}
+
+.recent-pull-chip iconify-icon {
+  color: var(--text-secondary);
+}
+
+.recent-pull-rarity {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* ───────────────────────────────────────
+   PITY COUNTER DISPLAY
+─────────────────────────────────────── */
+.pity-display {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.pity-label {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pity-label iconify-icon {
+  color: var(--text-muted);
+}
+
+.pity-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pity-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pity-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pity-bar-fill-ssr {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rarity-sr), var(--rarity-ssr));
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.pity-bar-fill-sur {
+  height: 100%;
+  background: linear-gradient(90deg, var(--rarity-ssr), var(--rarity-sur));
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.pity-percent {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ───────────────────────────────────────
+   DAILY REWARD CLAIMED ANIMATION
+─────────────────────────────────────── */
+@keyframes claimPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.12); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.daily-card.just-claimed {
+  animation: claimPop 0.4s ease;
+  border-color: var(--color-success);
+  box-shadow: 0 0 16px rgba(48,255,144,0.3);
+}
+
+/* ───────────────────────────────────────
+   CRYSTAL GAIN FLOAT ANIMATION
+─────────────────────────────────────── */
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+}
+
+.crystal-float {
+  position: fixed;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--color-accent);
+  text-shadow: 0 0 10px rgba(240,192,64,0.8);
+  pointer-events: none;
+  z-index: 500;
+  animation: floatUp 1.2s ease forwards;
+}
+
+/* ───────────────────────────────────────
+   NO ANNOUNCEMENTS STATE
+─────────────────────────────────────── */
+.no-announcements {
+  text-align: center;
+  padding: var(--space-md);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-style: italic;
+}
