@@ -1,0 +1,640 @@
+/* ═══════════════════════════════════════════════════════════
+   ABYSS GACHA — COLLECTION CSS
+   Card collection browser, filters, sort, card detail view
+═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────
+   COLLECTION SCREEN WRAPPER
+─────────────────────────────────────── */
+#screen-collection {
+  background: var(--bg-base);
+  gap: var(--space-md);
+}
+
+/* ───────────────────────────────────────
+   COLLECTION HEADER
+─────────────────────────────────────── */
+.collection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.collection-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.collection-title iconify-icon {
+  color: var(--color-primary);
+}
+
+.collection-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-dim);
+}
+
+/* ───────────────────────────────────────
+   TYPE TABS (Summon / Equipment / Magic)
+─────────────────────────────────────── */
+.collection-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--border-dim);
+}
+
+.col-tab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+
+.col-tab-btn iconify-icon {
+  transition: color 0.15s;
+}
+
+.col-tab-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.col-tab-btn.active iconify-icon {
+  color: #fff;
+}
+
+.col-tab-count {
+  font-size: 0.62rem;
+  opacity: 0.8;
+}
+
+/* ───────────────────────────────────────
+   FILTER & SORT BAR
+─────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: var(--radius-xl);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.filter-chip:active,
+.filter-chip.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Rarity-colored filter chips */
+.filter-chip.chip-e    { --chip-color: var(--rarity-e); }
+.filter-chip.chip-n    { --chip-color: var(--rarity-n); }
+.filter-chip.chip-r    { --chip-color: var(--rarity-r); }
+.filter-chip.chip-sr   { --chip-color: var(--rarity-sr); }
+.filter-chip.chip-ssr  { --chip-color: var(--rarity-ssr); }
+.filter-chip.chip-sssr { --chip-color: var(--rarity-sssr); }
+.filter-chip.chip-ur   { --chip-color: var(--rarity-ur); }
+.filter-chip.chip-sur  { --chip-color: var(--rarity-sur); }
+.filter-chip.chip-ex   { --chip-color: var(--rarity-ex); }
+
+.filter-chip.chip-e.active,
+.filter-chip.chip-n.active,
+.filter-chip.chip-r.active,
+.filter-chip.chip-sr.active,
+.filter-chip.chip-ssr.active,
+.filter-chip.chip-sssr.active,
+.filter-chip.chip-ur.active,
+.filter-chip.chip-sur.active,
+.filter-chip.chip-ex.active {
+  background: var(--chip-color);
+  border-color: var(--chip-color);
+  color: #fff;
+}
+
+/* Sort dropdown */
+.sort-select {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-xl);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23604880'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+/* Search bar */
+.collection-search {
+  position: relative;
+}
+
+.collection-search iconify-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.collection-search input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.collection-search input:focus {
+  border-color: var(--color-primary);
+}
+
+.collection-search input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ───────────────────────────────────────
+   CARD GRID
+─────────────────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+/* Individual card in grid */
+.col-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  justify-content: center;
+}
+
+.col-card:active {
+  transform: scale(0.95);
+}
+
+/* Rarity top accent bar */
+.col-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-rarity-color, var(--border-dim));
+}
+
+.col-card.rarity-e    { --card-rarity-color: var(--rarity-e); }
+.col-card.rarity-n    { --card-rarity-color: var(--rarity-n); }
+.col-card.rarity-r    { --card-rarity-color: var(--rarity-r); }
+.col-card.rarity-sr   { --card-rarity-color: var(--rarity-sr); }
+.col-card.rarity-ssr  { --card-rarity-color: var(--rarity-ssr); }
+.col-card.rarity-sssr { --card-rarity-color: var(--rarity-sssr); }
+.col-card.rarity-ur   { --card-rarity-color: var(--rarity-ur); }
+.col-card.rarity-sur  { --card-rarity-color: var(--rarity-sur); animation: glow-sur 2s ease-in-out infinite; }
+.col-card.rarity-ex   { --card-rarity-color: var(--rarity-ex);  animation: glow-ex  1.5s ease-in-out infinite; }
+
+.col-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-dim);
+}
+
+.col-card-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.col-card-rarity {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Quantity badge (for magic cards) */
+.col-card-qty {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  line-height: 1.4;
+}
+
+/* In-party indicator */
+.col-card-in-party {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  color: var(--color-success);
+  background: rgba(48,255,144,0.15);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ───────────────────────────────────────
+   CARD DETAIL OVERLAY
+─────────────────────────────────────── */
+#card-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 250;
+  padding: var(--space-md);
+}
+
+#card-detail-overlay.hidden {
+  display: none;
+}
+
+.card-detail-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-normal);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  animation: slideUp 0.3s ease;
+}
+
+/* Detail card top section */
+.card-detail-top {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.card-detail-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-detail-name {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.card-detail-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.card-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.card-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: var(--radius-xl);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-summon    { background: rgba(155,48,255,0.2); color: var(--color-primary); border: 1px solid rgba(155,48,255,0.3); }
+.type-equipment { background: rgba(255,140,0,0.15); color: var(--rarity-ur);     border: 1px solid rgba(255,140,0,0.3); }
+.type-magic     { background: rgba(48,192,255,0.15); color: var(--color-info);   border: 1px solid rgba(48,192,255,0.3); }
+.type-consumable { background: rgba(48,255,144,0.12); color: var(--color-success); border: 1px solid rgba(48,255,144,0.25); }
+
+/* Quantity display (magic/consumable) */
+.card-detail-qty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.card-detail-qty-num {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--color-primary);
+}
+
+/* Stats section */
+.card-detail-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.card-detail-stats-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+/* Skill / Effect section */
+.card-detail-skill {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.card-detail-skill-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.card-detail-skill-title iconify-icon {
+  color: var(--color-primary);
+}
+
+.card-detail-skill-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.card-detail-skill-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Magic card cost display */
+.magic-cost-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(155,48,255,0.08);
+  border: 1px solid rgba(155,48,255,0.2);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+}
+
+.magic-cost-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.magic-cost-value {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.magic-use-type {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-xl);
+  font-weight: 700;
+}
+
+.magic-use-type.single-use {
+  background: rgba(255,51,85,0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(255,51,85,0.25);
+}
+
+.magic-use-type.reusable {
+  background: rgba(48,255,144,0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(48,255,144,0.25);
+}
+
+/* Description */
+.card-detail-desc {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding: var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+  margin-bottom: var(--space-lg);
+}
+
+/* Action buttons */
+.card-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Close button row */
+.card-detail-close-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-sm);
+}
+
+/* ───────────────────────────────────────
+   EMPTY COLLECTION STATE
+─────────────────────────────────────── */
+.collection-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.collection-empty iconify-icon {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.collection-empty p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.collection-empty-btn {
+  padding: 10px 24px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  width: auto;
+}
+
+/* ───────────────────────────────────────
+   EQUIPMENT DETAIL EXTRAS
+─────────────────────────────────────── */
+.equip-class-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-xl);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(255,140,0,0.12);
+  color: var(--rarity-ur);
+  border: 1px solid rgba(255,140,0,0.25);
+}
+
+.equip-bonus-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--space-md);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+
+.equip-bonus-label {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.equip-bonus-value {
+  font-weight: 800;
+  color: var(--color-success);
+}
