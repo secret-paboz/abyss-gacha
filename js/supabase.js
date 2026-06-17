@@ -5,8 +5,8 @@
 
 // ── CONFIG ───────────────────────────────────────────────
 // Replace these with your actual Supabase project values
-const SUPABASE_URL     = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+const SUPABASE_URL     = 'https://qdydxodqfayuiifaazbo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkeWR4b2RxZmF5dWlpZmFhemJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTUyMDAsImV4cCI6MjA5NzI5MTIwMH0.DjrOtoecPKwh7137o83rOBeMkkqTGgkrXT0W4PArv2w';
 
 // ── CLIENT INIT ──────────────────────────────────────────
 const { createClient } = supabase;
