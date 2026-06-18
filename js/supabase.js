@@ -10,7 +10,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // ── CLIENT INIT ──────────────────────────────────────────
 const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'implicit',
+  },
+});
 
 // ── GLOBAL PLAYER STATE ──────────────────────────────────
 // Holds the current logged-in player's data in memory
@@ -35,18 +42,8 @@ window.GameState = {
  * @returns {object} { error }
  */
 async function authRegister(username, email, password) {
-  // 1. Check username not taken
-  const { data: existing } = await sb
-    .from('players')
-    .select('id')
-    .eq('username', username)
-    .maybeSingle();
-
-  if (existing) {
-    return { error: { message: 'Username already taken. Please choose another.' } };
-  }
-
-  // 2. Sign up with Supabase Auth (email is the real email)
+  // Sign up directly - username uniqueness enforced by DB UNIQUE constraint
+  // Pre-auth DB check removed as it fails before session is established
   const { data, error } = await sb.auth.signUp({
     email,
     password,
@@ -55,7 +52,13 @@ async function authRegister(username, email, password) {
     }
   });
 
-  if (error) return { error };
+  if (error) {
+    // Handle duplicate username from DB constraint
+    if (error.message && error.message.includes('duplicate')) {
+      return { error: { message: 'Username already taken. Please choose another.' } };
+    }
+    return { error };
+  }
 
   return { data, error: null };
 }
@@ -67,36 +70,22 @@ async function authRegister(username, email, password) {
  * @returns {object} { data, error }
  */
 async function authLogin(username, password) {
-  // 1. Look up the email linked to this username
-  // We query players table using service functions that bypass RLS
-  const { data: playerRow, error: lookupErr } = await sb
-    .from('players')
-    .select('id')
-    .eq('username', username)
-    .maybeSingle();
+  // Step 1: get email via RPC (works without auth session)
+  const { data: emailData, error: emailErr } = await sb
+    .rpc('get_email_by_id_from_username', { p_username: username });
 
-  if (lookupErr || !playerRow) {
+  if (emailErr || !emailData) {
     return { error: { message: 'Username not found.' } };
   }
 
-  // 2. Get email from auth.users via the player id
-  // We use a Supabase RPC for this since auth.users isn't directly accessible
-  const { data: emailData, error: emailErr } = await sb
-    .rpc('get_email_by_id', { user_id: playerRow.id });
-
-  if (emailErr || !emailData) {
-    return { error: { message: 'Could not resolve account. Please try again.' } };
-  }
-
-  // 3. Sign in with email + password
+  // Step 2: Sign in with email + password
   const { data, error } = await sb.auth.signInWithPassword({
     email: emailData,
     password,
   });
 
   if (error) {
-    // Friendly error messages
-    if (error.message.includes('Invalid login')) {
+    if (error.message.includes('Invalid login credentials')) {
       return { error: { message: 'Incorrect password.' } };
     }
     return { error };
