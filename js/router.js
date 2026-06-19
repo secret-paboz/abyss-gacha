@@ -12,37 +12,37 @@ document.addEventListener('DOMContentLoaded', async () => {
   showScreen('loading');
   animateLoadingBar();
 
-  // Listen for auth state changes
+  // Wire up auth form events first
+  initAuthListeners();
+
+  // Check session directly — simpler and more reliable
+  try {
+    const session = await authGetSession();
+    if (session) {
+      await onUserSignedIn();
+    } else {
+      showScreen('auth');
+      showAuthPanel('login');
+    }
+  } catch (err) {
+    console.error('[Init error]', err);
+    showScreen('auth');
+    showAuthPanel('login');
+  }
+
+  // Listen for auth state changes AFTER initial check
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-      if (session) {
-        await onUserSignedIn();
-      } else {
-        onUserSignedOut();
-      }
+    if (event === 'SIGNED_IN') {
+      await onUserSignedIn();
     }
     if (event === 'SIGNED_OUT') {
       onUserSignedOut();
     }
     if (event === 'PASSWORD_RECOVERY') {
-      // User clicked reset link — show reset form
       showScreen('auth');
       showAuthPanel('reset');
     }
   });
-
-  // Check for existing session
-  const session = await authGetSession();
-  if (!session) {
-    // No session → go to auth after loading animation
-    setTimeout(() => {
-      showScreen('auth');
-      showAuthPanel('login');
-    }, 2000);
-  }
-
-  // Wire up auth form events
-  initAuthListeners();
 });
 
 /* ═══════════════════════════════════════════════════════════
