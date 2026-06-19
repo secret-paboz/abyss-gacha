@@ -12,10 +12,22 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    flowType: 'implicit',
+    persistSession:     true,
+    autoRefreshToken:   true,
+    detectSessionInUrl: false,
+    flowType:           'implicit',
+    storageKey:         'abyss-gacha-auth',
+  },
+  global: {
+    fetch: async (url, options = {}) => {
+      try {
+        const res = await fetch(url, options);
+        return res;
+      } catch (err) {
+        console.error('[Supabase fetch error]', err.message, url);
+        throw err;
+      }
+    },
   },
 });
 
@@ -42,25 +54,27 @@ window.GameState = {
  * @returns {object} { error }
  */
 async function authRegister(username, email, password) {
-  // Sign up directly - username uniqueness enforced by DB UNIQUE constraint
-  // Pre-auth DB check removed as it fails before session is established
-  const { data, error } = await sb.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { username }   // passed to handle_new_user trigger
-    }
-  });
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username }
+      }
+    });
 
-  if (error) {
-    // Handle duplicate username from DB constraint
-    if (error.message && error.message.includes('duplicate')) {
-      return { error: { message: 'Username already taken. Please choose another.' } };
+    if (error) {
+      if (error.message && error.message.includes('duplicate')) {
+        return { error: { message: 'Username already taken. Please choose another.' } };
+      }
+      return { error };
     }
-    return { error };
+
+    return { data, error: null };
+  } catch (err) {
+    console.error('[authRegister error]', err);
+    return { error: { message: 'Connection failed. Check your internet and try again. (' + err.message + ')' } };
   }
-
-  return { data, error: null };
 }
 
 /**
@@ -662,256 +676,4 @@ async function gmSetRole(targetId, roleId) {
 async function gmGiveCrystals(targetId, amount) {
   const { data: target } = await sb.from('players').select('crystals').eq('id', targetId).single();
   const { error } = await sb
-    .from('players')
-    .update({ crystals: (target?.crystals || 0) + amount })
-    .eq('id', targetId);
-  await gmLog('give_crystals', targetId, false, { amount });
-  return { error };
-}
-
-/**
- * Remove crystals from a single player
- */
-async function gmRemoveCrystals(targetId, amount) {
-  const { data: target } = await sb.from('players').select('crystals').eq('id', targetId).single();
-  const newAmount = Math.max(0, (target?.crystals || 0) - amount);
-  const { error } = await sb
-    .from('players')
-    .update({ crystals: newAmount })
-    .eq('id', targetId);
-  await gmLog('remove_crystals', targetId, false, { amount });
-  return { error };
-}
-
-/**
- * Give crystals to ALL players (broadcast)
- */
-async function gmBroadcastCrystals(amount) {
-  // Use notification system — insert notif for all players
-  const { data: allPlayers } = await sb.from('players').select('id');
-  if (!allPlayers) return { error: { message: 'Could not fetch players.' } };
-
-  const notifs = allPlayers.map(p => ({
-    player_id:       p.id,
-    title:           '🎁 Crystal Gift from GM',
-    message:         `The Game Master has gifted you ${amount} Abyss Crystals!`,
-    reward_type:     'crystals',
-    crystals_amount: amount,
-  }));
-
-  const { error } = await sb.from('notifications').insert(notifs);
-  await gmLog('broadcast_crystals', null, true, { amount, count: allPlayers.length });
-  return { error };
-}
-
-/**
- * Give a card to a single player
- */
-async function gmGiveCard(targetId, cardKey, quantity = 1) {
-  const { data: existing } = await sb
-    .from('player_collection')
-    .select('*')
-    .eq('player_id', targetId)
-    .eq('card_key', cardKey)
-    .maybeSingle();
-
-  let error;
-  if (existing) {
-    ({ error } = await sb
-      .from('player_collection')
-      .update({ quantity: existing.quantity + quantity })
-      .eq('player_id', targetId)
-      .eq('card_key', cardKey));
-  } else {
-    ({ error } = await sb
-      .from('player_collection')
-      .insert({ player_id: targetId, card_key: cardKey, quantity }));
-  }
-
-  await gmLog('give_card', targetId, false, { card_key: cardKey, quantity });
-  return { error };
-}
-
-/**
- * Remove a card from a player
- */
-async function gmRemoveCard(targetId, cardKey) {
-  const { error } = await sb
-    .from('player_collection')
-    .delete()
-    .eq('player_id', targetId)
-    .eq('card_key', cardKey);
-  await gmLog('remove_card', targetId, false, { card_key: cardKey });
-  return { error };
-}
-
-/**
- * Ban or unban a player
- */
-async function gmSetBan(targetId, isBanned) {
-  const { error } = await sb
-    .from('players')
-    .update({ is_banned: isBanned })
-    .eq('id', targetId);
-  await gmLog(isBanned ? 'ban_player' : 'unban_player', targetId, false, {});
-  return { error };
-}
-
-/**
- * Post a new announcement
- */
-async function gmPostAnnouncement(title, message) {
-  const uid = window.GameState.user?.id;
-  const { error } = await sb
-    .from('announcements')
-    .insert({ title, message, created_by: uid, is_active: true });
-  await gmLog('post_announcement', null, false, { title });
-  return { error };
-}
-
-/**
- * Delete an announcement
- */
-async function gmDeleteAnnouncement(id) {
-  const { error } = await sb
-    .from('announcements')
-    .update({ is_active: false })
-    .eq('id', id);
-  return { error };
-}
-
-/**
- * Create a voucher code
- */
-async function gmCreateVoucher(voucherData) {
-  const uid = window.GameState.user?.id;
-  const { error } = await sb
-    .from('voucher_codes')
-    .insert({ ...voucherData, created_by: uid });
-  await gmLog('create_voucher', null, false, { code: voucherData.code });
-  return { error };
-}
-
-/**
- * Toggle voucher active state
- */
-async function gmToggleVoucher(id, isActive) {
-  const { error } = await sb
-    .from('voucher_codes')
-    .update({ is_active: isActive })
-    .eq('id', id);
-  return { error };
-}
-
-/**
- * Load all active vouchers (GM view)
- */
-async function gmLoadVouchers() {
-  const { data, error } = await sb
-    .from('voucher_codes')
-    .select('*')
-    .order('created_at', { ascending: false });
-  return { data, error };
-}
-
-/**
- * Load GM audit logs
- */
-async function gmLoadLogs(limit = 50) {
-  const { data, error } = await sb
-    .from('gm_logs')
-    .select('*, gm:players!gm_id(username), target:players!target_player_id(username)')
-    .order('created_at', { ascending: false })
-    .limit(limit);
-  return { data, error };
-}
-
-/**
- * Load game stats for GM dashboard
- */
-async function gmLoadStats() {
-  const today = new Date().toISOString().split('T')[0];
-
-  const [totalRes, todayRes, weekRes] = await Promise.all([
-    sb.from('players').select('id', { count: 'exact', head: true }),
-    sb.from('players').select('id', { count: 'exact', head: true })
-      .eq('last_login_date', today),
-    sb.from('player_collection').select('card_key')
-      .order('quantity', { ascending: false }).limit(5),
-  ]);
-
-  return {
-    totalPlayers: totalRes.count || 0,
-    activeToday:  todayRes.count || 0,
-    topCards:     weekRes.data || [],
-  };
-}
-
-/**
- * Log a GM action
- */
-async function gmLog(action, targetId, isBroadcast, details) {
-  const gmId = window.GameState.user?.id;
-  await sb.from('gm_logs').insert({
-    gm_id:            gmId,
-    action,
-    target_player_id: targetId || null,
-    is_broadcast:     isBroadcast,
-    details,
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   HELPER: SUPABASE RPC (add this SQL to Supabase)
-   Run in SQL Editor:
-
-   CREATE OR REPLACE FUNCTION get_email_by_id(user_id UUID)
-   RETURNS TEXT AS $$
-     SELECT email FROM auth.users WHERE id = user_id;
-   $$ LANGUAGE sql SECURITY DEFINER;
-
-═══════════════════════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════════════════════════
-   MAGIC CARD QUANTITY HELPERS
-═══════════════════════════════════════════════════════════ */
-
-/**
- * Consume one magic card from collection (used in battle)
- */
-async function consumeMagicCard(cardKey) {
-  const uid      = window.GameState.user?.id;
-  const existing = window.GameState.collection.find(c => c.card_key === cardKey);
-  if (!existing || existing.quantity <= 0) return { error: { message: 'Card not available.' } };
-
-  if (existing.quantity === 1) {
-    await sb.from('player_collection')
-      .delete()
-      .eq('player_id', uid)
-      .eq('card_key', cardKey);
-    window.GameState.collection = window.GameState.collection.filter(c => c.card_key !== cardKey);
-  } else {
-    await sb.from('player_collection')
-      .update({ quantity: existing.quantity - 1 })
-      .eq('player_id', uid)
-      .eq('card_key', cardKey);
-    existing.quantity -= 1;
-  }
-
-  return { error: null };
-}
-
-/**
- * Check if player owns a card
- */
-function playerOwnsCard(cardKey) {
-  return window.GameState.collection.some(c => c.card_key === cardKey && c.quantity > 0);
-}
-
-/**
- * Get quantity of a card
- */
-function getCardQuantity(cardKey) {
-  const col = window.GameState.collection.find(c => c.card_key === cardKey);
-  return col ? col.quantity : 0;
-}
+ 
