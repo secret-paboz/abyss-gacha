@@ -15,19 +15,6 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     persistSession:     true,
     autoRefreshToken:   true,
     detectSessionInUrl: false,
-    flowType:           'implicit',
-    storageKey:         'abyss-gacha-auth',
-  },
-  global: {
-    fetch: async (url, options = {}) => {
-      try {
-        const res = await fetch(url, options);
-        return res;
-      } catch (err) {
-        console.error('[Supabase fetch error]', err.message, url);
-        throw err;
-      }
-    },
   },
 });
 
@@ -676,4 +663,15 @@ async function gmSetRole(targetId, roleId) {
 async function gmGiveCrystals(targetId, amount) {
   const { data: target } = await sb.from('players').select('crystals').eq('id', targetId).single();
   const { error } = await sb
- 
+    .from('players')
+    .update({ crystals: (target?.crystals || 0) + amount })
+    .eq('id', targetId);
+  await gmLog('give_crystals', targetId, false, { amount });
+  return { error };
+}
+
+/**
+ * Remove crystals from a single player
+ */
+async function gmRemoveCrystals(targetId, amount) {
+  const { data: target } = await sb.from('players').
