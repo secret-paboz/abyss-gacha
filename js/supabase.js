@@ -148,8 +148,18 @@ async function authLogout() {
  * Get current auth session
  */
 async function authGetSession() {
-  const { data: { session } } = await sb.auth.getSession();
-  return session;
+  try {
+    // Timeout after 5 seconds so loading screen never gets stuck
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), 5000)
+    );
+    const sessionCall = sb.auth.getSession();
+    const { data: { session } } = await Promise.race([sessionCall, timeout]);
+    return session;
+  } catch (err) {
+    console.warn('[authGetSession]', err.message);
+    return null;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -663,15 +673,3 @@ async function gmSetRole(targetId, roleId) {
 async function gmGiveCrystals(targetId, amount) {
   const { data: target } = await sb.from('players').select('crystals').eq('id', targetId).single();
   const { error } = await sb
-    .from('players')
-    .update({ crystals: (target?.crystals || 0) + amount })
-    .eq('id', targetId);
-  await gmLog('give_crystals', targetId, false, { amount });
-  return { error };
-}
-
-/**
- * Remove crystals from a single player
- */
-async function gmRemoveCrystals(targetId, amount) {
-  const { data: target } = await sb.from('players').
